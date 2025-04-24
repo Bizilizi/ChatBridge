@@ -13,7 +13,7 @@ model:
   num_query_token: 32
 
   # Vicuna
-  llama_model: "/mnt/bn/vlpopt/zhaozijia/LLM/vicuna-13b"
+  llama_model: "/home/wiss/zverev/audiovisual_diagnostics/gradio/ChatBridge/vicuna_weights"
 
   # generation configs
   prompt: ""

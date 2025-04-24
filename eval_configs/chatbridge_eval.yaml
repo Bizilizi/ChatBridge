@@ -9,7 +9,7 @@ model:
   prompt_template: '###Human: {} ###Assistant: '
   stage: 2
 
-  ckpt: "MODEL_WEIGHT"
+  ckpt: "/home/wiss/zverev/audiovisual_diagnostics/gradio/ChatBridge/vicuna_weights/13b/pytorch_model-00002-of-00003.bin"
 
 
 run:

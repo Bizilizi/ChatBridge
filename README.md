@@ -51,6 +51,10 @@ conda env create -f environment.yml
 conda activate chatbridge
 ```
 
+**1.1 Prepare BEATs iter**
+`mkdir beats_weights`
+`cd beats_weights`
+`wget https://huggingface.co/nsivaku/nithin_checkpoints/resolve/main/BEATs_iter3_plus_AS2M.pt?download=true -O BEATs_iter3_plus_AS2M.pt`
 
 **2. Prepare the pretrained Vicuna weights**
 

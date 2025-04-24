@@ -31,7 +31,7 @@ import torch.nn.functional as F
 punctuation = string.punctuation
 import numpy as np
 from torchvision.transforms import functional as transform_F
-from dataloader import KVReader
+# from dataloader import KVReader
 import io
 import decord
 import torchaudio
