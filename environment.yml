@@ -61,3 +61,7 @@ dependencies:
     - gradio==3.24.1
     - gradio-client==0.0.8
     - wandb
+  - pytorch=1.12.1
+  - pytorch-mutex=1.0=cuda
+  - torchaudio=0.12.1
+  - torchvision=0.13.1

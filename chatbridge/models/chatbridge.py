@@ -4,7 +4,7 @@ import random
 import torch
 from torch.cuda.amp import autocast as autocast
 import torch.nn as nn
-
+from tqdm.auto import tqdm
 from chatbridge.common.registry import registry
 from chatbridge.models.blip2 import Blip2Base, disabled_train
 from chatbridge.models.modeling_llama import LlamaForCausalLM
@@ -138,8 +138,9 @@ class ChatBridge(Blip2Base):
                 torch_dtype=torch.float16,
             )
 
-        for name, param in self.llama_model.named_parameters():
+        for name, param in tqdm(self.llama_model.named_parameters()):
             param.requires_grad = False
+            
         print('Loading LLAMA Done')
 
         self.llama_proj = nn.Linear(

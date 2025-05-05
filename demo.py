@@ -59,7 +59,24 @@ model_config = cfg.model_cfg
 model_config.device_8bit = args.gpu_id
 print(model_config)
 model_cls = registry.get_model_class(model_config.arch)
-model = model_cls.from_config(model_config).to('cuda:{}'.format(args.gpu_id))
+model = model_cls.from_config(model_config)
+
+def get_model_size(model):
+    param_size = 0
+    for param in model.parameters():
+        param_size += param.nelement() * param.element_size()
+    buffer_size = 0
+    for buffer in model.buffers():
+        buffer_size += buffer.nelement() * buffer.element_size()
+
+    total_size = (param_size + buffer_size) / 1024**2  # Convert to MB
+    return total_size
+
+# Example usage:
+model_size_mb = get_model_size(model)
+print(f"Model size: {model_size_mb:.2f} MB")
+
+model.to('cuda:{}'.format(args.gpu_id))
 model.eval()
 
 vis_processor = AlproVideoEvalProcessor(image_size=224, n_frms=4)
