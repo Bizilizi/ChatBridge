@@ -272,7 +272,7 @@ def process_video(
 
             all_responses.append(f"{cl}: {class_response}")
 
-        response = ",".join(all_responses)
+        response = ",".join(all_responses).replace("\n", "\\n")
 
     else:
         raise ValueError(
