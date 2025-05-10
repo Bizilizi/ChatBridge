@@ -202,9 +202,7 @@ def process_video(
     if prompt_mode == "single":
         chat = Chat(model, vis_processor, aud_processor, device=f"cuda:{gpu_id}")
         
-        # Ask the question
-        chat.ask(prompt_text, chat_state)
-            # Select appropriate conversation template based on modality
+        # Select appropriate conversation template based on modality
         if modality == "av":
             chat_state = CONV_VIDEO.copy()
         elif modality == "a":
@@ -219,7 +217,7 @@ def process_video(
         
         # Ask the question
         prompt_text = prompt.format(cl=", ".join(CLASSES))
-        chat.ask(prompt_text, class_chat_state)
+        chat.ask(prompt_text, chat_state)
         
         # Get the answer
         response = chat.answer(
