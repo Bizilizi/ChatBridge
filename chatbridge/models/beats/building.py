@@ -1,7 +1,7 @@
 from chatbridge.models.beats.BEATs import  BEATsConfig, BEATs
 import torch
 def create_beat(): 
-    checkpoint = torch.load('beats_weights/BEATs_iter3_plus_AS2M.pt')
+    checkpoint = torch.load('./beats_weights/BEATs_iter3_plus_AS2M.pt')
     cfg = BEATsConfig(checkpoint['cfg'])
     audio_encoder = BEATs(cfg)
     audio_encoder.load_state_dict(checkpoint['model'])

@@ -9,7 +9,7 @@ model:
   prompt_template: '###Human: {} ###Assistant: '
   stage: 2
 
-  ckpt: "vicuna_weights/13b/pytorch_model-00002-of-00003.bin"
+  ckpt: "./vicuna_weights/13b/pytorch_model-00002-of-00003.bin"
 
 
 run:
