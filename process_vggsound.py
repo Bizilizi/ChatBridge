@@ -91,8 +91,8 @@ def parse_args():
     parser.add_argument(
         "--modality",
         type=str,
-        default="video",
-        choices=["video", "audio", "image"],
+        default="av",
+        choices=["v", "a", "av"],
         help="Modality to use for processing",
     )
     parser.add_argument(
