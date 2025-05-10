@@ -13,7 +13,7 @@ model:
   num_query_token: 32
 
   # Vicuna
-  llama_model: "/home/wiss/zverev/audiovisual_diagnostics/gradio/ChatBridge/vicuna_weights"
+  llama_model: "vicuna_weights/13b"
 
   # generation configs
   prompt: ""
