@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 import sys
+import traceback
 import torch
 import numpy as np
 import pandas as pd
@@ -171,7 +172,10 @@ CLASSES = pd.read_csv("../../data/audio_classes.csv")["display_name"].tolist()
 
 @torch.inference_mode()
 def process_video(
-    chat,
+    model,
+    vis_processor,
+    aud_processor,
+    gpu_id,
     dataset_path,
     video_id,
     temperature,
@@ -189,28 +193,34 @@ def process_video(
     """
     video_path = os.path.join(dataset_path, "video", video_id)
 
-    # Select appropriate conversation template based on modality
-    if modality == "video":
-        chat_state = CONV_VIDEO.copy()
-    elif modality == "audio":
-        chat_state = CONV_AUDIO.copy()
-    else:  # image
-        chat_state = CONV_VISION.copy()
-
     # Initialize chat with video
     img_list = []
-    llm_message = chat.upload_img(video_path, chat_state, img_list, type=modality)
-
     detected = []
     response = ""
 
     # Process detection classes based on prompt mode
     if prompt_mode == "single":
-        prompt_text = prompt.format(cl=", ".join(CLASSES))
-
+        chat = Chat(model, vis_processor, aud_processor, device=f"cuda:{gpu_id}")
+        
         # Ask the question
         chat.ask(prompt_text, chat_state)
-
+            # Select appropriate conversation template based on modality
+        if modality == "av":
+            chat_state = CONV_VIDEO.copy()
+        elif modality == "a":
+            chat_state = CONV_AUDIO.copy()
+        elif modality == "v":
+            chat_state = CONV_VISION.copy()
+        else:
+            raise ValueError(f"Invalid modality: {modality}")
+        
+        img_list = []
+        chat.upload_img(video_path, chat_state, img_list, type=modality)
+        
+        # Ask the question
+        prompt_text = prompt.format(cl=", ".join(CLASSES))
+        chat.ask(prompt_text, class_chat_state)
+        
         # Get the answer
         response = chat.answer(
             conv=chat_state,
@@ -229,13 +239,17 @@ def process_video(
     elif prompt_mode == "multi":
         all_responses = []
         for cl in tqdm(CLASSES, desc="Processing classes", leave=False):
+            chat = Chat(model, vis_processor, aud_processor, device=f"cuda:{gpu_id}")
+            
             # Reset the chat state for each class
-            if modality == "video":
+            if modality == "av":
                 class_chat_state = CONV_VIDEO.copy()
-            elif modality == "audio":
+            elif modality == "a":
                 class_chat_state = CONV_AUDIO.copy()
-            else:  # image
+            elif modality == "v":
                 class_chat_state = CONV_VISION.copy()
+            else:
+                raise ValueError(f"Invalid modality: {modality}")
 
             # Initialize chat with video for each class
             class_img_list = []
@@ -243,8 +257,6 @@ def process_video(
 
             # Format prompt for this specific class
             prompt_text = prompt.format(cl=cl)
-
-            # Ask the question
             chat.ask(prompt_text, class_chat_state)
 
             # Get the answer
@@ -302,8 +314,6 @@ def main():
     vis_processor = AlproVideoEvalProcessor(image_size=224, n_frms=4)
     aud_processor = BlipAudioEvalProcessor()
 
-    # Initialize chat
-    chat = Chat(model, vis_processor, aud_processor, device=f"cuda:{args.gpu_id}")
     print("Initialization Finished")
 
     # Get video list
@@ -321,6 +331,11 @@ def main():
     args.output_csv = args.output_csv.replace(
         ".csv", f"_{args.prompt_mode}_page_{args.page}.csv"
     )
+    
+    if os.path.exists(args.output_csv):
+        already_processed = pd.read_csv(args.output_csv)
+        already_processed = set(already_processed["video_id"].tolist())
+        page_videos = [vid for vid in page_videos if vid not in already_processed]
 
     predictions = {}
     responses = {}
@@ -329,7 +344,10 @@ def main():
     for video_id in tqdm(page_videos, desc="Processing Videos"):
         try:
             detected_classes, response = process_video(
-                chat=chat,
+                model=model,
+                vis_processor=vis_processor,
+                aud_processor=aud_processor,
+                gpu_id=args.gpu_id,
                 dataset_path=args.dataset_path,
                 video_id=video_id,
                 temperature=args.temperature,
@@ -348,7 +366,7 @@ def main():
             write_predictions_csv(predictions, responses, args.output_csv)
 
         except Exception as e:
-            print(f"Error processing video {video_id}: {e}")
+            print(f"Error processing video {video_id}: {traceback.format_exc()}")
             continue
 
     print(f"Completed processing {len(page_videos)} videos.")
