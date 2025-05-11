@@ -1,11 +1,11 @@
 #!/bin/sh
 #SBATCH --job-name="chatbridge"
-#SBATCH --array=0-16
+#SBATCH --array=0-15
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
 #SBATCH --gres=gpu:1
-#SBATCH --partition=mcml-dgx-a100-40x8
+#SBATCH --partition=mcml-hgx-a100-80x4,mcml-hgx-h100-94x4,mcml-dgx-a100-40x8
 #SBATCH --qos=mcml
 #SBATCH --mem=96G
 #SBATCH --time=48:00:00
@@ -15,18 +15,6 @@
 #SBATCH --error=./logs/slurm-%A_%a.out
  
 nvidia-smi
-
-# Mount squashfs files
-cleanup () {
-    fusermount -u /tmp/zverev/$SLURM_JOB_ID/vggsound
-    rmdir /tmp/zverev/$SLURM_JOB_ID/vggsound
-}
-
-trap cleanup EXIT
-
-echo "Mounting VGGsound"
-mkdir -p /tmp/zverev/$SLURM_JOB_ID/vggsound
-/usr/bin/squashfuse /dss/dssmcmlfs01/pn67gu/pn67gu-dss-0000/zverev/datasets/vggsound.squashfs /tmp/zverev/$SLURM_JOB_ID/vggsound
 
 # Activate your conda environment (adjust if needed)
 set -x
@@ -47,7 +35,7 @@ fi
 srun --exclusive --ntasks=1 python process_vggsound.py \
   --cfg-path eval_configs/chatbridge_eval.yaml \
   --gpu-id 0 \
-  --dataset_path /tmp/zverev/$SLURM_JOB_ID/vggsound \
+  --dataset_path $MCMLSCRATCH/datasets/vggsound_test \
   --video_csv ../../data/train.csv \
   --output_csv csv/$modality/predictions.csv \
   --temperature 1.0 \
