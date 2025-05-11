@@ -36,7 +36,7 @@ srun --exclusive --ntasks=1 python process_vggsound.py \
   --cfg-path eval_configs/chatbridge_eval.yaml \
   --gpu-id 0 \
   --dataset_path $MCMLSCRATCH/datasets/vggsound_test \
-  --video_csv ../../data/train.csv \
+  --video_csv ../../data/test.csv \
   --output_csv csv/$modality/predictions.csv \
   --temperature 1.0 \
   --num_beams 1 \
