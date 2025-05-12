@@ -5,8 +5,7 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
 #SBATCH --gres=gpu:1
-#SBATCH --partition=mcml-hgx-a100-80x4,mcml-hgx-h100-94x4,mcml-dgx-a100-40x8
-#SBATCH --qos=mcml
+#SBATCH --partition=a100-galvani
 #SBATCH --mem=96G
 #SBATCH --time=48:00:00
 #SBATCH --mail-type=ALL
@@ -19,8 +18,6 @@ nvidia-smi
 # Activate your conda environment (adjust if needed)
 set -x
 
-export SRUN_CPUS_PER_TASK=$SLURM_CPUS_PER_TASK
-
 modality=$1
 echo "This is $modality, page $SLURM_ARRAY_TASK_ID"
 
@@ -32,10 +29,10 @@ else
 fi
 
 # Run the script on each node, assigning each task to a different GPU
-srun --exclusive --ntasks=1 python process_vggsound.py \
+srun python process_vggsound.py \
   --cfg-path eval_configs/chatbridge_eval.yaml \
   --gpu-id 0 \
-  --dataset_path $MCMLSCRATCH/datasets/vggsound_test \
+  --dataset_path /mnt/lustre/work/akata/askoepke97/data/vggsound \
   --video_csv ../../data/test.csv \
   --output_csv csv/$modality/predictions.csv \
   --temperature 1.0 \
