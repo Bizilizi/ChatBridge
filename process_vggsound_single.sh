@@ -29,7 +29,7 @@ else
 fi
 
 # Run the script on each node, assigning each task to a different GPU
-srun python process_vggsound.py \
+srun --exclusive --ntasks=1 --cpu-bind=none  python process_vggsound.py \
   --cfg-path eval_configs/chatbridge_eval.yaml \
   --gpu-id 0 \
   --dataset_path /mnt/lustre/work/akata/askoepke97/data/vggsound \
