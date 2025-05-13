@@ -280,6 +280,7 @@ def process_video(
         )
 
     # Return the unique set of detected classes and the response
+    response = response.replace("\n", "\\n")
     return list(set(detected)), response
 
 
