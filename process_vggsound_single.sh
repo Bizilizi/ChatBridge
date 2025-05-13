@@ -12,7 +12,8 @@
 #SBATCH --mail-user=zverev@in.tum.de
 #SBATCH --output=./logs/slurm-%A_%a.out
 #SBATCH --error=./logs/slurm-%A_%a.out
- 
+#SBATCH --exclude=galvani-cn221
+
 nvidia-smi
 
 # Activate your conda environment (adjust if needed)
