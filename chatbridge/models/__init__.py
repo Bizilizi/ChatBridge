@@ -1,8 +1,8 @@
 """
- Copyright (c) 2022, salesforce.com, inc.
- All rights reserved.
- SPDX-License-Identifier: BSD-3-Clause
- For full license text, see the LICENSE_Lavis file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+Copyright (c) 2022, salesforce.com, inc.
+All rights reserved.
+SPDX-License-Identifier: BSD-3-Clause
+For full license text, see the LICENSE_Lavis file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 """
 
 import logging
@@ -15,12 +15,7 @@ from chatbridge.models.blip2 import Blip2Base
 from chatbridge.models.chatbridge import ChatBridge
 from chatbridge.processors.base_processor import BaseProcessor
 
-__all__ = [
-    "load_model",
-    "BaseModel",
-    "Blip2Base",
-    "ChatBridge"
-]
+__all__ = ["load_model", "BaseModel", "Blip2Base", "ChatBridge"]
 
 
 def load_model(name, model_type, is_eval=False, device="cpu", checkpoint=None):

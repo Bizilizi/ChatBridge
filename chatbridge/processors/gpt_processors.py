@@ -47,7 +47,9 @@ class GPTDialogueProcessor(BaseProcessor):
     def __init__(self, max_turns=3, use_caption=True):
         self.max_turns = max_turns
         self.use_caption = use_caption
-        self.tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
+        self.tokenizer = GPT2Tokenizer.from_pretrained(
+            "gpt2", cache_dir="./cache"
+        )
         self.tokenizer.add_special_tokens(SPECIAL_TOKENS_DICT)
 
     def sample_sequence(self, caption, history, answer):
@@ -122,7 +124,9 @@ class GPTDialogueProcessor(BaseProcessor):
 class GPTVideoFeatureProcessor(GPTVideoFeatureBaseProcessor):
     def __init__(self, visual_ft, audio_ft):
         super().__init__(visual_ft, audio_ft)
-        self.tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
+        self.tokenizer = GPT2Tokenizer.from_pretrained(
+            "gpt2", cache_dir="./cache"
+        )
         self.tokenizer.add_special_tokens(SPECIAL_TOKENS_DICT)
 
     def padding(self, seq):

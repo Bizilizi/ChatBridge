@@ -130,12 +130,15 @@ class ChatBridge(Blip2Base):
         print('Loading Q-Former Done')
 
         print('Loading LLAMA')
-        self.llama_tokenizer = LlamaTokenizer.from_pretrained(llama_model, use_fast=False, repo_type="local")
+        self.llama_tokenizer = LlamaTokenizer.from_pretrained(
+            llama_model, use_fast=False, repo_type="local", cache_dir="./cache"
+        )
         self.llama_tokenizer.pad_token = self.llama_tokenizer.eos_token
 
         self.llama_model = LlamaForCausalLM.from_pretrained(
                 llama_model,
                 torch_dtype=torch.float16,
+                cache_dir="./cache",
             )
 
         for name, param in tqdm(self.llama_model.named_parameters()):
