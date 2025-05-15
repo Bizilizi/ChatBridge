@@ -1,8 +1,8 @@
 """
- Copyright (c) 2022, salesforce.com, inc.
- All rights reserved.
- SPDX-License-Identifier: BSD-3-Clause
- For full license text, see the LICENSE_Lavis file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+Copyright (c) 2022, salesforce.com, inc.
+All rights reserved.
+SPDX-License-Identifier: BSD-3-Clause
+For full license text, see the LICENSE_Lavis file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 """
 
 import datetime
@@ -129,9 +129,7 @@ def download_cached_file(url, check_hash=True, progress=False):
         return cached_file
 
     if is_main_process():
-        timm_hub.download_cached_file(
-            url, check_hash, progress, cache_dir="./cache"
-        )
+        timm_hub.download_cached_file(url, check_hash, progress)
 
     if is_dist_avail_and_initialized():
         dist.barrier()
